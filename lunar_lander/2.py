@@ -146,11 +146,24 @@ if __name__ == "__main__":
                 if len(agent.memory) >= agent.train_start:
                     agent.train_model()
 
-            state = next_state
-
             fuel_conservation = fuel_remaining / total_fuel
 
+            if state[0][0] > next_state[0][0]:
+                if state[0][0] < 10:
+                    if  -5 < state[0][0] < 5 and done:
+                        landing_reward = 100
+                        reward = landing_reward * fuel_conservation
+                    else:
+                        reward = -10
+                else:
+                    reward = -100
+            else:
+                distance_reward = 1 - (state[0][0] / 100)**0.5
+                reward = distance_reward * fuel_conservation
 
+            print(state)
+
+            state = next_state
 
             if done:
                 if not is_done:
